@@ -4,7 +4,7 @@ trigger:
 variables:
   projectName: 'ANS-Datafetcher'
   buildConfiguration: 'Release'
-  tag: $(Date:yyyyMMdd).$(Rev:r)
+  tag: $(Build.BuildNumber)
   dockerRegistryServiceConnection: 'docker'
   imageRepositoryBackEnd: 'dashboard'
   dockerRunName: 'MaartensTestScript'
