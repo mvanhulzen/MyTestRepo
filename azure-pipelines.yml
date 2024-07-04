@@ -64,13 +64,15 @@ stages:
     steps:
     - task: CmdLine@2
       displayName: 'Stop Old Container'
+      continueOnError: true
       inputs:
         script: 'docker stop $(dockerRunName)'
     - task: CmdLine@2
       displayName: 'Remove Old Container'
+      continueOnError: true
       inputs:
         script: 'docker rm $(dockerRunName)'
     - task: CmdLine@2
       displayName: 'Run New Container'
       inputs:
-        script: 'docker run -d --name $(dockerRunName) windesheimhboict/ansdatafechter:$(tag)'
+        script: 'docker run -d --name $(dockerRunName) windesheimhboict/maartenstestscript:$(tag)'
