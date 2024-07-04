@@ -3,7 +3,7 @@ FROM python:3
 WORKDIR /usr/src/app
 
 RUN echo precopy
-COPY ./src .
+COPY . .
 RUN echo postcopy
 
 RUN pip install --no-cache-dir -r requirements.txt
