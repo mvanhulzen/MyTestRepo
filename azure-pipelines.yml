@@ -48,7 +48,7 @@ stages:
     - task: Docker@2
       displayName: 'Build and push the image to container registry'
       inputs:
-        command: buildAndPush
+        command: build
         buildContext: './'
         repository: 'windesheimhboict/maartenstestscript'
         dockerfile: 'Dockerfile'
