@@ -46,6 +46,8 @@ stages:
     pool: Default
     steps:
     - task: Docker@2
+#disble build because it is not needed anymore    
+      enabled : False
       displayName: 'Build and push the image to container registry'
       inputs:
         command: build
@@ -73,6 +75,8 @@ stages:
       inputs:
         script: 'docker rm $(dockerRunName)'
     - task: CmdLine@2
+    
+      enabled : False
       displayName: 'Run New Container'
       inputs:
         script: 'docker run -d --name $(dockerRunName) windesheimhboict/maartenstestscript:$(tag)'
