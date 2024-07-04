@@ -1,1 +1,1 @@
-*/1 * * * * python /insertrandomrecord.py
+*/1 * * * * /usr/local/bin/python /usr/src/app/insertrandomrecord.py 
