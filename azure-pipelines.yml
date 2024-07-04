@@ -49,7 +49,7 @@ stages:
       displayName: 'Build and push the image to container registry'
       inputs:
         command: buildAndPush
-        buildContext: '/'
+        buildContext: './'
         repository: 'windesheimhboict/maartenstestscript'
         dockerfile: 'Dockerfile'
         containerRegistry: 'docker'
