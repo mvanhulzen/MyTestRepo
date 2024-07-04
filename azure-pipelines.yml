@@ -51,7 +51,7 @@ stages:
         command: buildAndPush
         buildContext: '/'
         repository: 'windesheimhboict/maartenstestscript'
-        dockerfile: './Dockerfile'
+        dockerfile: 'Dockerfile'
         containerRegistry: 'docker'
         tags: $(tag) 
 - stage: 'Run_Container'
