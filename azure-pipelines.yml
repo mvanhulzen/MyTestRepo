@@ -1,29 +1,76 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
-- main
-
-resources:
-- repo: self
+  - main
 
 variables:
-  tag: '$(Build.BuildId)'
+  projectName: 'ANS-Datafetcher'
+  buildConfiguration: 'Release'
+  tag: $(Date:yyyyMMdd).$(Rev:r)
+  dockerRegistryServiceConnection: 'docker'
+  imageRepositoryBackEnd: 'dashboard'
+  dockerRunName: 'MaartensTestScript'
 
 stages:
-- stage: Build
-  displayName: Build image
+- stage: 'Test'
   jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: ubuntu-latest
+  - job: Backend_Test
+    displayName: 'Backend Test'
+    pool: Default
+    steps:
+    - task: CmdLine@2
+      displayName: 'Print tag var'
+      inputs:
+        script: 'echo tag $(tag)'
+    - task: CmdLine@2
+      displayName: 'Print tag dockerrunname'
+      inputs:
+        script: 'echo dockerrunname $(dockerRunName)'
+                
+#    - task: UseDotNet@2
+#      inputs:
+#        version: '8.x'
+#    - task: DotNetCoreCLI@2
+#      inputs:
+#        command: 'restore'
+#        projects: '$(testFilePath)'
+#    - task: DotNetCoreCLI@2
+#     inputs:
+#       command: 'test'
+#        projects: '$(testFilePath)'
+#        arguments: '--configuration $(buildConfiguration)'
+- stage: 'Build'
+  displayName: 'Build and push'
+  dependsOn: Test
+  jobs:
+  - job: 'Build'
+    displayName: 'Build job'
+    pool: Default
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: 'Build and push the image to container registry'
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+        command: buildAndPush
+        buildContext: '/'
+        repository: 'windesheimhboict/maartenstestscript'
+        dockerfile: './Dockerfile'
+        containerRegistry: 'docker'
+        tags: $(tag) 
+- stage: 'Run_Container'
+  displayName: 'Deployment'
+  dependsOn: Build
+  jobs:
+  - job: 'Run_Container'
+    displayName: 'Deploy Docker Container'
+    pool: Default
+    steps:
+    - task: CmdLine@2
+      displayName: 'Stop Old Container'
+      inputs:
+        script: 'docker stop $(dockerRunName)'
+    - task: CmdLine@2
+      displayName: 'Remove Old Container'
+      inputs:
+        script: 'docker rm $(dockerRunName)'
+    - task: CmdLine@2
+      displayName: 'Run New Container'
+      inputs:
+        script: 'docker run -d --name $(dockerRunName) windesheimhboict/ansdatafechter:$(tag)'
